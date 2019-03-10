@@ -1,4 +1,5 @@
 import os, sys, traceback
+from datetime import datetime, timedelta
 from time import sleep
 from dotenv import load_dotenv
 from mastodon import Mastodon
@@ -8,7 +9,7 @@ from bs4 import BeautifulSoup
 import lxml
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -24,7 +25,7 @@ load_dotenv()
 # PostgreSQL ドライバにpsycopg2-binaryが使用されます。
 engine = create_engine(os.getenv("DATABASE_URL"), encoding="utf-8")
 # MySQL ドライバにMySQLdbが使用されます。フォークされたmysqlclientでも問題ありません
-#engine = create_engine(os.getenv("DATABASE_URL"), encoding="utf-8")
+#engine = create_engine(os.getenv("DATABASE_URL")+"?charset=utf8", encoding="utf-8")
 
 # Base
 Base = declarative_base()
@@ -43,6 +44,8 @@ class NewsList(Base):
     title = Column(String(100))
     url = Column(String(50))
     isnew = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
 
 
 def scraping():
@@ -56,8 +59,15 @@ def scraping():
         #BueatifulSoupのパーサーにはlxmlを使用する
         soup = BeautifulSoup(html, "lxml")
 
-        # ニュースタイトルへのリンクをすべて取得
-        sv_newslinks = soup.find_all("a", attrs={"class": "title-link"})
+        # ニュースタイトルが入っているブロックを10件取得
+        sv_news_blocks = soup.find_all("div", attrs={"class", "list-wrap"}, limit=10)
+
+        # 現在日時の取得
+        now_date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # サイトの日付の書式
+        news_today = datetime.now().strftime("%Y.%m.%d")
+        # 30日前の日時
+        ago_30days = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d %H:%M:%S")
 
         # テーブルクラスのテーブルを生成
         Base.metadata.create_all(engine)
@@ -66,15 +76,16 @@ def scraping():
         Session = sessionmaker(bind=engine)
         session = Session()
 
-        # データベースからデータを読み出す
-        saved_datas = session.query(NewsList).all()
+        # データベースから30日前までのデータを読み出す
+        saved_datas = session.query(NewsList).filter(NewsList.created_at > ago_30days).all()
 
-        # 比較する新着ニュースの数
-        news_count = 5
+        # reversed(sv_news_blocks) で逆から要素を取り出す
+        for sv_news_block in reversed(sv_news_blocks):
+            # timeタグが今日なら
+            if sv_news_block.time.string == news_today:
+                # ニュースタイトルへのリンクをすべて取得
+                sv_newslink = sv_news_block.find("a", attrs={"class": "title-link"})
 
-        for sv_newslink in sv_newslinks:
-            # 5つのニュースを取得。それ以上は無視する
-            if news_count > 0:
                 # ニュースのタイトルを取得
                 news_title = sv_newslink.find("h4").string
 
@@ -98,9 +109,9 @@ def scraping():
                             # 追記のタイトルに変更してDBを更新
                             saved_data.title = news_title
                             saved_data.isnew = True
+                            saved_data.created_at = now_date_time
                             session.commit()
                             break
-
 
                 # 既存の記事と一致しない場合
                 if new_news:
@@ -108,14 +119,9 @@ def scraping():
                     session.add(NewsList(
                         title=news_title,
                         url=news_link,
-                        isnew=True)
+                        isnew=True,
+                        created_at=now_date_time)
                     )
-
-                # 比較した記事数を1つ増やす
-                news_count -= 1
-            # 5つの記事を比較したらループを抜ける
-            else:
-                break
 
         # コミット（データ追加を実行）
         session.commit()
