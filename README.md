@@ -6,6 +6,7 @@ Shadowverseの最新ニュースをマストドンに投稿するBot
 
 1. .env_sample を .env にリネームして、必要なトークンなどの情報を書き込む
 2. cron などで1時間に1度程度 newsbot.py を実行する
+3. Botが動作した日のニュースしか取得しないので注意
 
 ## 依存パッケージ
 
@@ -20,6 +21,9 @@ Shadowverseの最新ニュースをマストドンに投稿するBot
 
 ## 更新履歴
 
+- Ver.0.1.2 (2019/03/10)
+　- Botが動作した日に更新されたニュースのみを取得するように変更
+  - 内部処理の変更
 - Ver.0.1.1 (2019/03/08)
   - 更新されていないニュースも投稿されてしまうバグを修正
   - 例外処理を形だけ追加
@@ -58,3 +62,4 @@ Shadowverseの最新ニュースをマストドンに投稿するBot
 - [Python逆引きサンプルコード50選（Mastodon API初級編）](https://takulog.info/exercise-python-for-mastodon-1-answer/)
 - [Pythonで始めるHeroku 2018](https://qiita.com/torukashima/items/0d6d00d0186b153d5e45)
 - [簡単！Herokuで動くTwitter botをPythonで実装する](https://qiita.com/enomotok_/items/41275dd904c8aa774e72)
+- [Pythonのdatetimeで日付や時間と文字列を変換（strftime, strptime）](https://note.nkmk.me/python-datetime-usage/)
