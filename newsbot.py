@@ -55,10 +55,8 @@ def scraping():
     try:
         #クローリングしたいURLを指定
         html = request.urlopen("https://shadowverse.jp/news/")
-
         #BueatifulSoupのパーサーにはlxmlを使用する
         soup = BeautifulSoup(html, "lxml")
-
         # ニュースタイトルが入っているブロックを10件取得
         sv_news_blocks = soup.find_all("div", attrs={"class", "list-wrap"}, limit=10)
 
@@ -71,13 +69,14 @@ def scraping():
 
         # テーブルクラスのテーブルを生成
         Base.metadata.create_all(engine)
-
-        # セッション生成
+        # データベースのセッション生成
         Session = sessionmaker(bind=engine)
         session = Session()
-
-        # データベースから30日前までのデータを読み出す
-        saved_datas = session.query(NewsList).filter(NewsList.created_at > ago_30days).all()
+        # データベースから30日前までのデータを降順で読み出す
+        saved_datas = session.query(NewsList). \
+            filter(NewsList.created_at > ago_30days). \
+            order_by(NewsList.created_at.desc()). \
+            all()
 
         # reversed(sv_news_blocks) で逆から要素を取り出す
         for sv_news_block in reversed(sv_news_blocks):
@@ -85,16 +84,19 @@ def scraping():
             if sv_news_block.time.string == news_today:
                 # ニュースタイトルへのリンクをすべて取得
                 sv_newslink = sv_news_block.find("a", attrs={"class": "title-link"})
-
-                # ニュースのタイトルを取得
-                news_title = sv_newslink.find("h4").string
-
                 # ニュースのURLを取得
                 news_link = sv_newslink.get("href")
+                # ニュースのタイトルを取得
+                news_title = sv_newslink.find("h4").string
+                # タイトルの末尾が...の場合
+                if "..." in news_title:
+                    pageurl = request.urlopen("https://shadowverse.jp" + news_link)
+                    page = BeautifulSoup(pageurl, "lxml")
+                    # 個別ページに行ってニュースタイトルを取得
+                    news_title = page.find("h3").string
 
                 # 新着ニュースか否か
                 new_news = True
-
                 # データベースの情報と比較
                 for saved_data in saved_datas:
                     # データベースにすでに存在している記事か確認
@@ -127,6 +129,7 @@ def scraping():
         session.commit()
 
     except:
+        # エラー内容の出力
         sys.stderr.write(traceback.format_exc())
 
     finally:
@@ -146,7 +149,7 @@ def bottoot():
             api_base_url = os.getenv("MSTDN_URL")
         )
 
-        # セッション生成
+        # データベースのセッション生成
         Session = sessionmaker(bind=engine)
         session = Session()
 
@@ -173,6 +176,7 @@ def bottoot():
         session.commit()
 
     except:
+        # エラー内容の出力
         sys.stderr.write(traceback.format_exc())
 
     finally:
