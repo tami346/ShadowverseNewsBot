@@ -104,7 +104,15 @@ def scraping():
                         # タイトルとURLが両方とも同じの場合は既存の記事だからスルー
                         if saved_data.title == news_title:
                             new_news = False
-                            break
+                            # 現在確認している不具合について
+                            if "現在確認している不具合について" == news_title:
+                                # 更新日時を変更してDBを更新
+                                saved_data.isnew = True
+                                saved_data.created_at = now_date_time
+                                session.commit()
+                                break
+                            else:
+                                break
                         # 追記の場合はURLは変わらずタイトルが変わる
                         else:
                             new_news = False
