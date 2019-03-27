@@ -106,11 +106,13 @@ def scraping():
                             new_news = False
                             # 現在確認している不具合について
                             if "現在確認している不具合について" == news_title:
-                                # 更新日時を変更してDBを更新
-                                saved_data.isnew = True
-                                saved_data.created_at = now_date_time
-                                session.commit()
-                                break
+                                # 更新日が今日でなければ
+                                if saved_data.created_at.strftime("%Y-%m-%d") != now_date_time[0:10]:
+                                    # 更新日時を変更してDBを更新
+                                    saved_data.isnew = True
+                                    saved_data.created_at = now_date_time
+                                    session.commit()
+                                    break
                             else:
                                 break
                         # 追記の場合はURLは変わらずタイトルが変わる
