@@ -112,9 +112,9 @@ def scraping():
                                     saved_data.isnew = True
                                     saved_data.created_at = now_date_time
                                     session.commit()
-                                    break
-                            else:
-                                break
+
+                            break
+
                         # 追記の場合はURLは変わらずタイトルが変わる
                         else:
                             new_news = False
