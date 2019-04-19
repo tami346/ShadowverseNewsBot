@@ -17,7 +17,6 @@ from sqlalchemy.orm import sessionmaker
 load_dotenv()
 
 # DB接続
-
 # SQLite 使用時
 #engine = create_engine('sqlite:///sample_db.sqlite3')  # スラッシュは3本
 # SQLログを表示したい場合には echo=True を指定
