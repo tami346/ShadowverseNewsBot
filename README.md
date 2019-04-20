@@ -4,23 +4,26 @@ Shadowverseの最新ニュースをマストドンに投稿するBot
 
 ## 使い方
 
-1. .env_sample を .env にリネームして、必要なトークンなどの情報を書き込む
-2. cron などで1時間に1度程度 newsbot.py を実行する
+1. .env_sampleを .envにリネームして、必要なトークンなどの情報を書き込む
+2. cronなどで1時間に1度程度newsbot.pyを実行する
 3. Botが動作した日のニュースしか取得しないので注意
 
 ## 依存パッケージ
 
+- bottle
 - beautifulsoup4
 - lxml
+- requests
 - Mastodon.py
 - python-dotenv
-- requests
 - SQLAlchemy
 - psycopg2-binary（PostgreSQL使用時）
 - mysqlclient（MySQL使用時）
 
 ## 更新履歴
 
+- Ver.0.1.5 (2019/04/21)
+  - requirements.txtではなくPipfileを使うように変更
 - Ver.0.1.4 (2019/03/28)
   - 「現在確認している不具合について」が掲載された日に何度も投稿してしまうバグを修正
 - Ver.0.1.3 (2019/03/11)

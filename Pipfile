@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pylint = "*"
+
+[packages]
+beautifulsoup4 = "*"
+bottle = "*"
+lxml = "*"
+mastodon-py = "*"
+mysqlclient = "*"
+psycopg2-binary = "*"
+python-dotenv = "*"
+requests = "*"
+sqlalchemy = "*"
+
+[requires]
+python_version = "3.7"
