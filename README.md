@@ -71,3 +71,4 @@ Shadowverseの最新ニュースをマストドンに投稿するBot
 - [Pythonで始めるHeroku 2018](https://qiita.com/torukashima/items/0d6d00d0186b153d5e45)
 - [簡単！Herokuで動くTwitter botをPythonで実装する](https://qiita.com/enomotok_/items/41275dd904c8aa774e72)
 - [Pythonのdatetimeで日付や時間と文字列を変換（strftime, strptime）](https://note.nkmk.me/python-datetime-usage/)
+- [Pipenvを使ったPython開発まとめ）](https://qiita.com/y-tsutsu/items/54c10e0b2c6b565c887a)
