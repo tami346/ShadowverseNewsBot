@@ -13,7 +13,6 @@ Shadowverseの最新ニュースをマストドンに投稿するBot
 - bottle
 - beautifulsoup4
 - lxml
-- requests
 - Mastodon.py
 - python-dotenv
 - SQLAlchemy

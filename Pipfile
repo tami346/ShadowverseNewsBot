@@ -14,7 +14,6 @@ mastodon-py = "*"
 mysqlclient = "*"
 psycopg2-binary = "*"
 python-dotenv = "*"
-requests = "*"
 sqlalchemy = "*"
 
 [requires]
