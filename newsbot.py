@@ -84,8 +84,8 @@ def scraping():
             if sv_news_block.time.string == news_today:
                 # ニュースタイトルへのリンクをすべて取得
                 sv_newslink = sv_news_block.find("a", attrs={"class": "title-link"})
-                # ニュースのURLを取得
-                news_link = sv_newslink.get("href")
+                # ニュースのURLを取得（v0.1.6で仕様変更のため頭にnewsを付けた
+                news_link = "/news/" + sv_newslink.get("href")
                 # ニュースのタイトルを取得
                 news_title = sv_newslink.find("h4").string
                 # タイトルの末尾が...の場合
