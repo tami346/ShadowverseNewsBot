@@ -13,8 +13,8 @@ lxml = "*"
 mastodon-py = "*"
 mysqlclient = "*"
 psycopg2-binary = "*"
-python-dotenv = "*"
 sqlalchemy = "*"
+python-dotenv = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
